@@ -7,7 +7,7 @@ function Navbar({productCount}){
         
         <img
         className="h-16"
-        src="./public/amazon_logo.svg"
+        src="./amazon_logo.svg"
         alt="Amazon Logo"/>
        
         <div className="flex flex-col justify-center items-center relative ">
