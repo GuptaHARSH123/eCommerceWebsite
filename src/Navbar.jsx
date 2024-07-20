@@ -1,6 +1,7 @@
 import React from 'react';
 import { IoBagOutline } from "react-icons/io5";
 function Navbar({productCount}){
+  console.log("Navbar is running..");
   return(
     <div className="py-4 bg-white shadow-lg">
       <div className="max-w-5xl flex justify-between mx-auto px-9  ">
@@ -17,10 +18,9 @@ function Navbar({productCount}){
         <span className="text-primary-default text-sm absolute bottom-4">{productCount}</span>
          </div>
       </div>
-      
-      
+          
     </div>
     
   );
 }
-export default Navbar;
+export default React.memo(Navbar);

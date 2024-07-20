@@ -1,94 +1,82 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import ProductList from './productlist';
 import Box from './box';
-import allData from './DummyData'
-import {getProductList} from './api';
+import { getProductList } from './api';
 import Nomatching from './Nomatching';
 import Loading from './Loading';
 
 function ProductHomePage() {
-  const[ProductListData , setProductListData]=useState([]);
-  const[query ,setQuery] = useState('');
-  const[sort ,setSort] = useState('default');
-  const [loading,setLoading]=useState(true);
+  const [ProductListData, setProductListData] = useState([]);
+  const [query, setQuery] = useState('');
+  const [sort, setSort] = useState('default');
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    const xyz = getProductList();
-    xyz.then(function(products){
-        let dataArray=products;
-        setProductListData(dataArray);
-        console.log(dataArray)
-        setLoading(false);
-    });
-     
+    const fetchData = async () => {
+      const products = await getProductList();
+      setProductListData(products);
+      setLoading(false);
+    };
+
+    fetchData();
   }, []);
-  let data =ProductListData.filter(function(item){
-    return item.title.toLowerCase().indexOf(query.toLowerCase())!=-1 
-  })
-  if(sort === 'priceLow'){
-      data.sort(function(a,b){
-      let x=+a.price;
-      let y=+b.price;
-      return x-y;  
-    })
-  }
-  else if(sort === 'name'){
-    data.sort(function(a,b){
-      return a.title<b.title?-1:1;
-    })
 
-  }
-  else if(sort === 'priceHigh'){
-    data.sort(function(a,b){
-      let x=+a.price;
-      let y=+b.price;
-      return y-x;  
-    })
+  const filteredAndSortedData = useMemo(() => {
+    let data = ProductListData.filter(item => item.title.toLowerCase().includes(query.toLowerCase()));
 
-  }
+    if (sort === 'priceLow') {
+      data.sort((a, b) => a.price - b.price);
+    } else if (sort === 'name') {
+      data.sort((a, b) => (a.title < b.title ? -1 : 1));
+    } else if (sort === 'priceHigh') {
+      data.sort((a, b) => b.price - a.price);
+    }
 
-  function handlechange(event){
-    const newQuery = event.target.value;
-    console.log(data);
-    setQuery(newQuery); 
-  }
-  function handleSortChange(event){
-    console.log(event.target.value);
+    return data;
+  }, [ProductListData, query, sort]);
+
+  const handleChange = useCallback((event) => {
+    setQuery(event.target.value);
+  }, []);
+
+  const handleSortChange = useCallback((event) => {
     setSort(event.target.value);
+  }, []);
+
+  if (loading) {
+    return <Loading />;
   }
-  if(loading){
-    return <><Loading/></>   
-  }
-  
 
   return (
-
-      <div>
-
-        <div className="max-w-5xl mx-auto bg-white px-9 py-[50px] my-16 shadow-lg "> 
-        <div className="flex flex-wrap gap-2 mb-5"> 
-        <input className="border-2 border-gray-500 rounded-md"
-          type="text" 
-          onChange={handlechange}
-          placeholder="Search"
+    <div>
+      <div className="max-w-5xl mx-auto bg-white px-9 py-[50px] my-16 shadow-lg">
+        <div className="flex flex-wrap gap-2 mb-5">
+          <input
+            className="border-2 border-gray-500 rounded-md"
+            type="text"
+            onChange={handleChange}
+            placeholder="Search"
           />
-        <select
-        onChange={handleSortChange}
-        className="border border-gray-700 rounded rounded-md"
-        value={sort}>
-        <option value="default">Default sort</option>
-        <option value="name">Sort by name</option>
-        <option value="priceLow">Sort by price: low to high</option>
-          <option value="priceHigh">Sort by price: high to low</option>
-        </select>
-         </div>
+          <select
+            onChange={handleSortChange}
+            className="border border-gray-700 rounded rounded-md"
+            value={sort}
+          >
+            <option value="default">Default sort</option>
+            <option value="name">Sort by name</option>
+            <option value="priceLow">Sort by price: low to high</option>
+            <option value="priceHigh">Sort by price: high to low</option>
+          </select>
+        </div>
 
-          {data.length && <ProductList products={data} />}
-          {data.length===0 && <Nomatching/>}
-          <Box/>
-         </div>
-
-
+        {filteredAndSortedData.length > 0 ? (
+          <ProductList products={filteredAndSortedData} />
+        ) : (
+          <Nomatching />
+        )}
+        <Box />
       </div>
+    </div>
   );
 }
 

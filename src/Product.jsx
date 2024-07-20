@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 function Product({title,category,price,thumbnail,id}){
+  console.log("Product is running...");
   return (
     <div className="max-w-xs mx-auto bg-gray-100">
       <div className="w-full aspect-square">
@@ -23,4 +24,4 @@ function Product({title,category,price,thumbnail,id}){
     
   );
 }
-export default Product;
+export default  React.memo(Product);

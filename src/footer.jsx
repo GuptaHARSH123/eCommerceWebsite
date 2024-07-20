@@ -1,5 +1,6 @@
 import React from 'react';
 function Footer(){
+  console.log("footer is running..")
   return(
     <div className="  bg-gray-600 ">
     <div className=" max-w-5xl mx-auto px-9 text-color-white flex justify-between items-center text-white text-sm py-6">
@@ -9,4 +10,4 @@ function Footer(){
     </div>
   );
 }
-export default Footer
+export default React.memo(Footer)
