@@ -5,7 +5,7 @@ import Box from './box';
 import ProductDetails from './ProductDetails';
 import ProductHomePage from "./ProductHomePage";
 import Navbar from './Navbar';
-import Footer from './Footer';
+import Footer from './footer';
 import Notfound from './Notfound';
 import { getProductsDetails } from './api';
 import CartPag from './CartPag';
