@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 import { IoBagOutline } from "react-icons/io5";
 function Navbar({productCount}){
   console.log("Navbar is running..");
@@ -13,7 +14,7 @@ function Navbar({productCount}){
        
         <div className="flex flex-col justify-center items-center relative ">
         <span className="text-5xl text-primary-default ">
-          <IoBagOutline /> 
+         <Link to= {"/CartPag"} ><IoBagOutline /></Link>
         </span>
         <span className="text-primary-default text-sm absolute bottom-4">{productCount}</span>
          </div>

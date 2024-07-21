@@ -8,19 +8,7 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 import Notfound from './Notfound';
 import { getProductsDetails } from './api';
-
-let data = localStorage.getItem("hello");
-console.log(data);
-
-function cart() {
-  const a = { 1: 3, 2: 5, 8: 10 };
-  const promises = Object.keys(a).map(b => getProductsDetails(b));
-  Promise.all(promises).then(responses => {
-    console.log(responses[2].data);
-  });
-}
-cart();
-
+import CartPag from './CartPag';
 function App() {
   const savedDataString = localStorage.getItem('myCartItem') || "{}";
   const savedData = JSON.parse(savedDataString);
@@ -50,6 +38,7 @@ function App() {
           <Route index element={<ProductHomePage />} />
           <Route path="/ProductDetails/:id/" element={<ProductDetails onAddToCart={handleAddToCart} />} />
           <Route path="*" element={<Notfound />} />
+          <Route path="/cartPag" element={<CartPag cartitem={cart}/>} ></Route>
         </Routes>
       </div>
       <Footer />
