@@ -6,7 +6,7 @@ import ProductDetails from './ProductDetails';
 import ProductHomePage from "./ProductHomePage";
 import Navbar from './Navbar';
 import Footer from './Footer';
-import NotFound from './NotFound';
+import NotFound from './Notfound';
 import { getProductsDetails } from './api';
 import CartPag from './CartPag';
 import EnhancedLoginPage from './LoginPage';

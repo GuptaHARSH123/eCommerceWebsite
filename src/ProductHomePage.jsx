@@ -59,7 +59,7 @@ function ProductHomePage() {
           />
           <select
             onChange={handleSortChange}
-            className="border border-gray-700 rounded rounded-md"
+            className="border border-gray-700  rounded-md"
             value={sort}
           >
             <option value="default">Default sort</option>
