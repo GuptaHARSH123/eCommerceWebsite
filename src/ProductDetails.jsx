@@ -52,7 +52,7 @@ function ProductDetails({ onAddToCart }) {
         <span>Back</span>
       </div>
       <div className="mx-5 shadow-lg rounded-md">
-        <div className="flex gap-5 p-4">
+        <div className="flex flex-col gap-5 p-4 sm:flex-row justify-center items-center">
           <div className="w-2/5 md:w-1/5">
             <img
               className="h-full w-full object-cover"

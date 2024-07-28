@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom';
 function Product({title,category,price,thumbnail,id}){
   console.log("Product is running...");
   return (
-    <div className="max-w-xs mx-auto bg-gray-100">
+    <div className="max-w-xs mx-auto hover:bg-gray-100 ">
       <div className="w-full aspect-square">
       <img className="w-full h-full object-cover" src={thumbnail} alt="product Image" />
       </div>
@@ -19,7 +19,7 @@ function Product({title,category,price,thumbnail,id}){
           <img src="./star.svg" alt="star"/>
         </div>
         <h2>Rs{price}</h2>
-       <Link to= {"/ProductDetails/"+ id} >View Details</Link>
+       <Link className='hover:text-primary-default' to= {"/ProductDetails/"+ id} >View Details</Link>
     </div>
     
   );

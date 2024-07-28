@@ -13,8 +13,10 @@ function CartRow({ item, localCart, updateCart, setLocalCart }) {
                 }}>
                     <CiCircleRemove />
                 </button>
+                <div className='flex flex-col items-center justify-normal sm:flex-row text-center gap-2'> 
                 <img src={item.thumbnail} alt={item.title} className='h-16' />
                  <div  className='text-primary-default'>{item.title}</div>  
+                 </div>
             </td>
             <td className="py-2 px-4 border-b text-center">
                 <p>${item.price}</p> 

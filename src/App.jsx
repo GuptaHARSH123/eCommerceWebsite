@@ -1,18 +1,22 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import ProductList from './productlist';
-import Box from './box';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import ProductList from './ProductList';
+import Box from './Box';
 import ProductDetails from './ProductDetails';
 import ProductHomePage from "./ProductHomePage";
 import Navbar from './Navbar';
-import Footer from './footer';
-import Notfound from './Notfound';
+import Footer from './Footer';
+import NotFound from './NotFound';
 import { getProductsDetails } from './api';
 import CartPag from './CartPag';
+import EnhancedLoginPage from './LoginPage';
+import SignUp from './SignUp';
+import ForgotPassword from './ForgotPassword';
+
 function App() {
   const savedDataString = localStorage.getItem('myCartItem') || "{}";
   const savedData = JSON.parse(savedDataString);
-  
+
   const [cart, setCart] = useState(savedData);
 
   const handleAddToCart = useCallback((productId, count) => {
@@ -20,12 +24,12 @@ function App() {
     const newCart = { ...cart, [productId]: oldCount + count };
     updateCart(newCart);
   }, [cart]);
-  function updateCart(newCart){
+
+  const updateCart = (newCart) => {
     setCart(newCart);
-    console.log(cart);
     const cartString = JSON.stringify(newCart);
     localStorage.setItem('myCartItem', cartString);
-  }
+  };
 
   const totalCount = useMemo(() => {
     return Object.keys(cart).reduce((previous, current) => {
@@ -35,16 +39,21 @@ function App() {
 
   return (
     <div className="h-screen bg-gray-100 overflow-scroll flex flex-col">
-      <Navbar productCount={totalCount} />
-      <div className="grow">
-        <Routes>
-          <Route index element={<ProductHomePage />} />
-          <Route path="/ProductDetails/:id/" element={<ProductDetails onAddToCart={handleAddToCart} />} />
-          <Route path="*" element={<Notfound />} />
-          <Route path="/cartPag" element={<CartPag cartitem={cart}  updateCart={updateCart} />} ></Route>
-        </Routes>
-      </div>
-      <Footer />
+     
+        <Navbar productCount={totalCount} />
+        <div className="grow">
+          <Routes>
+            <Route path="/" element={<ProductHomePage />} />
+            <Route path="/productdetails/:id" element={<ProductDetails onAddToCart={handleAddToCart} />} />
+            <Route path="*" element={<NotFound />} />
+            <Route path="/cartpag" element={<CartPag cartitem={cart} updateCart={updateCart} />} />
+            <Route path="/LoginPage" element={<EnhancedLoginPage />} />
+            <Route path="/SignUp" element={<SignUp />} />
+            <Route path="/ForgotPassword" element={<ForgotPassword />} />
+          </Routes>
+        </div>
+        <Footer />
+      
     </div>
   );
 }

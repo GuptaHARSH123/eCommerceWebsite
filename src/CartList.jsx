@@ -4,7 +4,7 @@ import CartRow from './CartRow';
 function CartList({ items, localCart, updateCart, setLocalCart }) {
     return (
         <div className="overflow-x-auto">
-            <table className="min-w-full">
+            <table className="min-w-full table-fixed">
                 <thead>
                     <tr>
                         <th className="py-2 px-4 border-b">Product</th>
