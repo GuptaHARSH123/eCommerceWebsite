@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import ProductList from './ProductList';
-import Box from './box';
+import Box from './Box';
 import { getProductList } from './api';
 import Nomatching from './Nomatching';
 import Loading from './Loading';
