@@ -19,7 +19,7 @@ function ProductDetails({ onAddToCart }) {
   useEffect(() => {
     const p = getProductsDetails(id);
     p.then((response) => {
-      setProductDetailsData(response.data);
+      setProductDetailsData(response);
       console.log(response.data);
       setLoading(false);
     }).catch(() => {

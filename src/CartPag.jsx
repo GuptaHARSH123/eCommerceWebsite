@@ -1,56 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect, useCallback } from 'react';
 import CartList from './CartList';
+import { getProductsDetails } from './api';
+import Loading from './Loading';
 
-export function getProductsDetails(id) {
-    return axios.get('https://dummyjson.com/products/' + id);
-}
-
-function CartPag({ cartitem }) {
+function CartPag({ cartitem, updateCart }) {
     const [cartItems, setCartItems] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [localCart, setLocalCart] = useState(cartitem);
     const [total, setTotal] = useState(0);
 
     useEffect(() => {
-        const convertCartItemToArray = (cartitem) => {
-            return Object.entries(cartitem).map(([key, value]) => ({
-                id: parseInt(key, 10),
-                quantity: value
-            }));
-        };
-        const cart = convertCartItemToArray(cartitem);
-
-        const fetchProducts = () => {
-            const productPromises = cart.map(item =>
-                getProductsDetails(item.id)
-                    .then(response => ({
-                        ...response.data,
-                        quantity: item.quantity
-                    }))
+        const fetchProductDetails = async () => {
+            const myProductPromises = Object.keys(cartitem).map((itemId) =>
+                getProductsDetails(itemId)
             );
-
-            Promise.all(productPromises)
-                .then(products => {
-                    setCartItems(products);
-                    calculateTotal(products);
-                })
-                .catch(error => {
-                    console.error('Error fetching products:', error);
-                });
+            const products = await Promise.all(myProductPromises);
+            setCartItems(products);
+            setLoading(false);
         };
 
-        fetchProducts();
+        fetchProductDetails();
     }, [cartitem]);
 
-    const calculateTotal = (items) => {
-        const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
-        setTotal(total);
-    };
+    useEffect(() => {
+        setLocalCart(cartitem);
+    }, [cartitem]);
+
+    useEffect(() => {
+        const calculateTotal = () => {
+            let newTotal = 0;
+            for (let i = 0; i < cartItems.length; i++) {
+                newTotal += cartItems[i].price * (localCart[cartItems[i].id] || 0);
+            }
+            setTotal(newTotal);
+        };
+
+        calculateTotal();
+    }, [cartItems, localCart]);
+
+    const handleUpdateCart = useCallback(() => {
+        updateCart(localCart);
+    }, [localCart, updateCart]);
+
+    if (loading) {
+        return <Loading />;
+    }
 
     return (
         <div className="p-4 max-w-4xl mx-auto bg-white my-4 flex flex-col">
             <div className='border border-gray-200 p-2'>
                 <h1 className="text-2xl font-bold mb-4">Your Cart</h1>
-                <CartList items={cartItems} />
+                <CartList 
+                    items={cartItems} 
+                    setLocalCart={setLocalCart} 
+                    localCart={localCart} 
+                    updateCart={updateCart} 
+                />
                 <div className='flex justify-between'>
                     <div>
                         <input
@@ -62,20 +67,24 @@ function CartPag({ cartitem }) {
                             Apply Coupon Code
                         </button>
                     </div>
-                    <button className="mt-4 bg-primary-light text-black py-2 px-4 rounded">
+                    <button
+                        onClick={handleUpdateCart}
+                        className="mt-4 bg-primary-light text-black py-2 px-4 rounded"
+                    >
                         Update Cart
                     </button>
                 </div>
             </div>
             <div className="mt-6 p-4 border border-gray-200 w-1/2 self-end">
-                <p className="text-lg">Subtotal: ${total.toFixed(2)}</p>
-                <p className="text-lg">Total: ${total.toFixed(2)}</p>
+                <h1 className="text-xl font-bold  ">Cart Total</h1>
+                <div className="text-lg flex justify-between"><p>Subtotal</p> <p>${total.toFixed(2)}</p></div>
+                <div className="text-lg flex justify-between"><p>Total</p> <p>${total.toFixed(2)}</p></div>
                 <button className="mt-4 bg-primary-default text-white py-2 px-4 rounded hover:bg-primary-dark">
                     Proceed to Checkout
                 </button>
             </div>
         </div>
     );
-};
+}
 
 export default CartPag;

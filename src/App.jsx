@@ -18,11 +18,14 @@ function App() {
   const handleAddToCart = useCallback((productId, count) => {
     const oldCount = cart[productId] || 0;
     const newCart = { ...cart, [productId]: oldCount + count };
+    updateCart(newCart);
+  }, [cart]);
+  function updateCart(newCart){
     setCart(newCart);
     console.log(cart);
     const cartString = JSON.stringify(newCart);
     localStorage.setItem('myCartItem', cartString);
-  }, [cart]);
+  }
 
   const totalCount = useMemo(() => {
     return Object.keys(cart).reduce((previous, current) => {
@@ -38,7 +41,7 @@ function App() {
           <Route index element={<ProductHomePage />} />
           <Route path="/ProductDetails/:id/" element={<ProductDetails onAddToCart={handleAddToCart} />} />
           <Route path="*" element={<Notfound />} />
-          <Route path="/cartPag" element={<CartPag cartitem={cart}/>} ></Route>
+          <Route path="/cartPag" element={<CartPag cartitem={cart}  updateCart={updateCart} />} ></Route>
         </Routes>
       </div>
       <Footer />

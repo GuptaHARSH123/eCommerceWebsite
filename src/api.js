@@ -1,7 +1,9 @@
 import allData from './DummyData';
 import axios from 'axios';
 export function getProductsDetails(id) {
-   return  axios.get('https://dummyjson.com/products/'+id);   
+   return  axios.get('https://dummyjson.com/products/'+id).then(function(respone){
+      return respone.data;
+   });   
 }
 export function getProductList() {
   return  axios.get('https://dummyjson.com/products').then(function(response){

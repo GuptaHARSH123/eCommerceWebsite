@@ -1,7 +1,7 @@
 import React from 'react';
 import CartRow from './CartRow';
 
-function CartList({ items }){
+function CartList({ items, localCart, updateCart, setLocalCart }) {
     return (
         <div className="overflow-x-auto">
             <table className="min-w-full">
@@ -15,12 +15,18 @@ function CartList({ items }){
                 </thead>
                 <tbody>
                     {items.map(item => (
-                        <CartRow key={item.id} item={item} />
+                        <CartRow 
+                            key={item.id} 
+                            item={item} 
+                            localCart={localCart} 
+                            updateCart={updateCart}  
+                            setLocalCart={setLocalCart} 
+                        />
                     ))}
                 </tbody>
             </table>
         </div>
     );
-};
+}
 
 export default CartList;
