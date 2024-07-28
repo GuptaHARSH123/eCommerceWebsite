@@ -10,4 +10,5 @@ function Footer(){
     </div>
   );
 }
+// footer
 export default React.memo(Footer)
