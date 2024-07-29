@@ -3,13 +3,13 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ProductDetails from './ProductDetails';
 import ProductHomePage from "./ProductHomePage";
 import Navbar from './Navbar';
-import Footer from './Footer';
 import NotFound from './Notfound';
 import { getProductsDetails } from './api';
 import CartPag from './CartPag';
 import EnhancedLoginPage from './LoginPage';
 import SignUp from './SignUp';
 import ForgotPassword from './ForgotPassword';
+import Footer from './Footer';
 
 function App() {
   const savedDataString = localStorage.getItem('myCartItem') || "{}";
