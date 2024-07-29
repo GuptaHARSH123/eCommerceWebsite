@@ -9,7 +9,7 @@ import CartPag from './CartPag';
 import EnhancedLoginPage from './LoginPage';
 import SignUp from './SignUp';
 import ForgotPassword from './ForgotPassword';
-import Footer from './Footer';
+import Footer from './footer';
 
 function App() {
   const savedDataString = localStorage.getItem('myCartItem') || "{}";
