@@ -4,41 +4,38 @@ import Box from './box';
 import { getProductList } from './api';
 import Nomatching from './Nomatching';
 import Loading from './Loading';
+import withUser from './withUser';
+import { useSearchParams, Link } from 'react-router-dom';
+ 
 
 function ProductHomePage() {
+   
   const [ProductListData, setProductListData] = useState([]);
   const [query, setQuery] = useState('');
-  const [sort, setSort] = useState('default');
+  const [sort, setSort] = useState();
+  const [pageNo , setPageNo]=useState();
   const [loading, setLoading] = useState(true);
+  let [searchParams , setSearchParams] = useSearchParams();
+  let skip= +searchParams.get("skip")|| 0;
+  console.log("skip" , skip);
+  
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const products = await getProductList();
-      setProductListData(products);
+  useEffect(() => { 
+    getProductList({sort , query,pageNo}).then((body)=>{
+      setProductListData(body);
       setLoading(false);
-    };
+     })
+     console.log("useEffect is runnig..");
+     
+    
+  }, [query,sort,pageNo,skip]);
 
-    fetchData();
-  }, []);
-
-  const filteredAndSortedData = useMemo(() => {
-    let data = ProductListData.filter(item => item.title.toLowerCase().includes(query.toLowerCase()));
-
-    if (sort === 'priceLow') {
-      data.sort((a, b) => a.price - b.price);
-    } else if (sort === 'name') {
-      data.sort((a, b) => (a.title < b.title ? -1 : 1));
-    } else if (sort === 'priceHigh') {
-      data.sort((a, b) => b.price - a.price);
-    }
-
-    return data;
-  }, [ProductListData, query, sort]);
 
   const handleChange = useCallback((event) => {
     setQuery(event.target.value);
   }, []);
 
+   
   const handleSortChange = useCallback((event) => {
     setSort(event.target.value);
   }, []);
@@ -63,21 +60,32 @@ function ProductHomePage() {
             value={sort}
           >
             <option value="default">Default sort</option>
-            <option value="name">Sort by name</option>
-            <option value="priceLow">Sort by price: low to high</option>
-            <option value="priceHigh">Sort by price: high to low</option>
+            <option value="title">Sort by name</option>
+            <option value="price">Sort by price: low to high</option>
+            <option value="priceHighToLow">Sort by price: high to low</option>
           </select>
         </div>
-
-        {filteredAndSortedData.length > 0 ? (
-          <ProductList products={filteredAndSortedData} />
+        
+        {ProductListData.products.length > 0 ? (
+          <ProductList products={ProductListData.products} />
         ) : (
           <Nomatching />
         )}
-        <Box />
+        {
+          ProductListData.total>0 &&  ProductListData.limit && [...Array(Math.floor(ProductListData.total/ProductListData.limit)).keys()].map((item)=>{
+           return <button
+            className={'px-2 py-1 border border-primary-dark hover:bg-primary-default hover:text-white mr-2 mt-5'+ ( skip === item*30 ? " bg-primary-default": " bg=white")}
+            onClick={()=>{
+              setSearchParams({skip:item*30});
+              setPageNo(item*30);
+            }}
+            >{item+1}</button>
+          })
+        }
+      
       </div>
     </div>
   );
 }
 
-export default ProductHomePage;
+export default withUser( ProductHomePage);
