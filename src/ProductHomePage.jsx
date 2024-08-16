@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import ProductList from './productlist';
-import Box from './box';
 import { getProductList } from './api';
 import Nomatching from './Nomatching';
 import Loading from './Loading';
@@ -11,34 +10,53 @@ import { useSearchParams, Link } from 'react-router-dom';
 function ProductHomePage() {
    
   const [ProductListData, setProductListData] = useState([]);
-  const [query, setQuery] = useState('');
-  const [sort, setSort] = useState();
-  const [pageNo , setPageNo]=useState();
   const [loading, setLoading] = useState(true);
-  let [searchParams , setSearchParams] = useSearchParams();
-  let skip= +searchParams.get("skip")|| 0;
-  console.log("skip" , skip);
-  
-
-  useEffect(() => { 
-    getProductList({sort , query,pageNo}).then((body)=>{
+  const [searchParams , setSearchParams] = useSearchParams();
+  let params = Object.fromEntries([...searchParams]);
+  let {q, sortBy ,skip, order }= params;
+  q=q||""
+  sortBy=sortBy||"default"
+  skip=+skip||0
+  order= order|| 'asc'
+  useEffect(() => {
+    getProductList({ q, sortBy, skip, order }).then((body) => {
       setProductListData(body);
       setLoading(false);
-     })
-     console.log("useEffect is runnig..");
-     
-    
-  }, [query,sort,pageNo,skip]);
+    });
+    console.log("useEffect is running..");
+  }, [sortBy, skip, q, order]);
 
 
-  const handleChange = useCallback((event) => {
-    setQuery(event.target.value);
-  }, []);
+  function handleChange(event) {
+    setSearchParams(
+    {...params , q:event.target.value, skip:0},
+    {replace : false}
+    );
+  };
 
    
-  const handleSortChange = useCallback((event) => {
-    setSort(event.target.value);
-  }, []);
+  function handleSortChange(event) {
+    if(event.target.value =='priceHighToLow'){
+      setSearchParams(
+        {...params 
+        , sortBy:"price",
+        order : "desc"},
+        {replace : false}
+        );
+    }
+    else if(event.target.value =='price'){
+      setSearchParams(
+      {...params , sortBy:"price",  order : "asc"},
+      {replace : false}
+      );
+    }
+    else if(event.target.value=='title'){
+      setSearchParams(
+        {...params , sortBy:"title",  order : "asc"},
+        {replace : false}
+        );
+    }
+  };
 
   if (loading) {
     return <Loading />;
@@ -57,7 +75,7 @@ function ProductHomePage() {
           <select
             onChange={handleSortChange}
             className="border border-gray-700  rounded-md"
-            value={sort}
+          
           >
             <option value="default">Default sort</option>
             <option value="title">Sort by name</option>
@@ -71,15 +89,14 @@ function ProductHomePage() {
         ) : (
           <Nomatching />
         )}
+        <div className='my-10'></div>
         {
           ProductListData.total>0 &&  ProductListData.limit && [...Array(Math.floor(ProductListData.total/ProductListData.limit)).keys()].map((item)=>{
-           return <button
-            className={'px-2 py-1 border border-primary-dark hover:bg-primary-default hover:text-white mr-2 mt-5'+ ( skip === item*30 ? " bg-primary-default": " bg=white")}
-            onClick={()=>{
-              setSearchParams({skip:item*30});
-              setPageNo(item*30);
-            }}
-            >{item+1}</button>
+           return <Link
+            className={'px-2  py-1 border border-primary-dark hover:bg-primary-default hover:text-white mr-2 '+ ( skip === item*30 ? " bg-primary-default": " bg=white")}
+             key={item}
+             to={"?"+new URLSearchParams({...params , skip:item*30})}
+            >{item+1}</Link>
           })
         }
       

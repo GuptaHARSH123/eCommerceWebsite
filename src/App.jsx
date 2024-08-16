@@ -15,49 +15,25 @@ import UserRoute from './UserRoute';
 import Alert from './Alert';
 import UserProvider from "./providers/UserProvider"
 import Alertprovider from './providers/Alertprovider';
+import CartProvider from './providers/CartProvider';
 
  
 export const alertContext = createContext();
 
 function App() {
-  const savedDataString = localStorage.getItem('myCartItem') || "{}";
-  const savedData = JSON.parse(savedDataString);
-
-  const [cart, setCart] = useState(savedData);
-
-  const handleAddToCart = useCallback((productId, count) => {
-    const oldCount = cart[productId] || 0;
-    const newCart = { ...cart, [productId]: oldCount + count };
-    updateCart(newCart);
-  }, [cart]);
-
-  const updateCart = (newCart) => {
-    setCart(newCart);
-    const cartString = JSON.stringify(newCart);
-    localStorage.setItem('myCartItem', cartString);
-  };
-
-  const totalCount = useMemo(() => {
-    return Object.keys(cart).reduce((previous, current) => {
-      return previous + cart[current];
-    }, 0);
-  }, [cart]);
-
-  
-
   return (
     <UserProvider>
       <Alertprovider> 
-      
+      <CartProvider> 
       <div className="h-screen bg-gray-100 overflow-scroll flex flex-col">
       <Alert/> 
-        <Navbar productCount={totalCount} />
+        <Navbar/>
         <div className="grow">
           <Routes>
-            <Route path="/" element={<UserRoute><ProductHomePage /></UserRoute>} />
-            <Route path="/productdetails/:id" element={<ProductDetails onAddToCart={handleAddToCart} />} />
+            <Route path="/" element={ <ProductHomePage /> } />
+            <Route path="/productdetails/:id" element={<ProductDetails />} />
             <Route path="*" element={<NotFound />} />
-            <Route path="/cartpag" element={ <UserRoute> <CartPag cartitem={cart} updateCart={updateCart} /> </UserRoute> } />
+            <Route path="/cartpag" element={<CartPag />} />
             <Route path="/LoginPage" element={<AuthRoute ><EnhancedLoginPage /></AuthRoute>} />
             <Route path="/SignUp" element={<SignUp />} />
             <Route path="/ForgotPassword" element={<ForgotPassword />} />
@@ -66,6 +42,7 @@ function App() {
         </div>
         <Footer />
       </div>
+    </CartProvider>
     </Alertprovider>
     </UserProvider>
  

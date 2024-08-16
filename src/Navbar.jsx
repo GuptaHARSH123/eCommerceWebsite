@@ -5,13 +5,8 @@ import { IoMdPerson } from "react-icons/io";
 import { useContext } from 'react';
 import { userContext } from './providers/UserProvider';
 import { IoLogOut } from "react-icons/io5";
-
-
-
-
-function Navbar({ productCount }) {
-   
-  
+import withCart from "./withCart";
+function Navbar({ totalCount }) {  
   const{user , setUser}= useContext(userContext);
   console.log("user is ", user);
   function handleLogout(){
@@ -34,7 +29,7 @@ function Navbar({ productCount }) {
           <span className="text-5xl text-primary-default">
              <IoBagOutline /> 
           </span>
-          <span className="text-primary-default text-sm absolute bottom-2 left-4">{productCount}</span>
+          <span className="text-primary-default text-sm absolute bottom-2 left-5">{totalCount}</span>
           </Link>
         </div>
         {!user && (<Link to={"/LoginPage"}><IoMdPerson className="text-5xl text-primary-dark inline-block"/></Link>)}
@@ -46,4 +41,4 @@ function Navbar({ productCount }) {
   );
 }
 
-export default React.memo(Navbar);
+export default  (withCart(Navbar));

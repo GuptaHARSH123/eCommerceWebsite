@@ -4,16 +4,18 @@ import { getProductsDetails } from './api';
 import Loading from './Loading';
 import { IoIosArrowRoundBack } from "react-icons/io";
 import {Link} from 'react-router-dom';
+import withCart from './withCart';
 
-function CartPag({ cartitem, updateCart }) {
+function CartPag({ cart, updateCart }) {
+   
     const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [localCart, setLocalCart] = useState(cartitem);
+    const [localCart, setLocalCart] = useState(cart);
     const [total, setTotal] = useState(0);
 
     useEffect(() => {
         const fetchProductDetails = async () => {
-            const myProductPromises = Object.keys(cartitem).map((itemId) =>
+            const myProductPromises = Object.keys(cart).map((itemId) =>
                 getProductsDetails(itemId)
             );
             const products = await Promise.all(myProductPromises);
@@ -22,11 +24,11 @@ function CartPag({ cartitem, updateCart }) {
         };
 
         fetchProductDetails();
-    }, [cartitem]);
+    }, [cart]);
 
     useEffect(() => {
-        setLocalCart(cartitem);
-    }, [cartitem]);
+        setLocalCart(cart);
+    }, [cart]);
 
     useEffect(() => {
         const calculateTotal = () => {
@@ -91,4 +93,4 @@ function CartPag({ cartitem, updateCart }) {
     );
 }
 
-export default CartPag;
+export default withCart(CartPag);

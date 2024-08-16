@@ -6,8 +6,9 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 import Loading from './Loading';
 import { GrLinkNext, GrLinkPrevious } from "react-icons/gr";
 import Notfound from './Notfound';
+import withCart from './withCart';
 
-function ProductDetails({ onAddToCart }) {
+function ProductDetails({ handleAddToCart }) {
   const params = useParams();
   const id = +params.id;
   console.log(id);
@@ -34,8 +35,8 @@ function ProductDetails({ onAddToCart }) {
   }, []);
 
   const handleButtonClick = useCallback(() => {
-    onAddToCart(id, count);
-  }, [onAddToCart, id, count]);
+    handleAddToCart(id, count);
+  }, [handleAddToCart, id, count]);
 
   if (loading) {
     return <Loading />;
@@ -105,4 +106,4 @@ function ProductDetails({ onAddToCart }) {
   );
 }
 
-export default ProductDetails;
+export default withCart(ProductDetails);
